@@ -1,0 +1,3 @@
+# Introduction
+
+This folder contains all the EASY problems in LeetCode that I have solved. Most of the problems will fall under the algorithms category, but some may include shell or database.
