@@ -1,24 +1,24 @@
 /* 
- * EASY 7/8/2020
+ * EASY 2/20/2021
  */
 
-import java.util.HashMap;
-
-public class TwoSum 
-{
+class Solution {
     public int[] twoSum(int[] nums, int target) {
-        HashMap <Integer, Integer> vals = new HashMap<>();
-        int [] indices = new int[2];
-        for (int index = 0; index < nums.length; index++)
+        int [] targ_arr = new int[2];
+        
+        outerloop:
+        for (int a = 0; a < nums.length; a++)
         {
-            int complement = target - nums[index];
-            if (vals.containsKey(complement) && index != vals.get(complement))
+            targ_arr[0] = a;
+            for (int b = a + 1; b < nums.length; b++)
             {
-                indices[0] = index;
-                indices[1] = vals.get(complement);
+                if (nums[a] + nums[b] == target)
+                {
+                    targ_arr[1] = b;
+                    break outerloop;
+                }
             }
-            vals.put(nums[index], index);
-        }
-        return indices;
+        }   
+        return targ_arr;
     }
 }
