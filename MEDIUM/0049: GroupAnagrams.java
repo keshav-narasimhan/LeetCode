@@ -1,48 +1,86 @@
 class Solution {
+    /*
+    // brute force? less optimal for sure
     public List<List<String>> groupAnagrams(String[] strs) {
-        /*
-         * slower solution --> will try and make it much more efficient next go-around
-         */
-        List<List<String>> grpAnagrams = new ArrayList<>();
-        HashSet<Integer> completedWords = new HashSet<>();
+        HashSet<Integer> indices = new HashSet<>();
+        List<List<String>> anagrams = new ArrayList<>();
         
         for (int i = 0; i < strs.length; i++) {
-            if (!completedWords.contains(i)) {
-                List<String> newAnagram = new ArrayList<>();
-                String currWord = strs[i];
-                newAnagram.add(currWord);
-                completedWords.add(i);
-                for (int j = i + 1; j < strs.length; j++) {
-                    String compareWord = strs[j];
-                    if (!completedWords.contains(j)) {
-                        if (checkAnagram(currWord.toCharArray(), compareWord.toCharArray())) {
-                            completedWords.add(j);
-                            newAnagram.add(compareWord);
-                        }   
-                    }
-                }
-            
-                grpAnagrams.add(newAnagram);
+            if (indices.contains(i)) {
+                continue;
             }
+            
+            indices.add(i);
+            String s = strs[i];
+            int [] sCharCounts = getCharCounts(s);
+            List<String> group = new ArrayList<>();
+            group.add(s);
+            
+            for (int j = i + 1; j < strs.length; j++) {
+                String o = strs[j];
+                
+                if (indices.contains(j) || o.length() != s.length()) {
+                    continue;
+                }
+                
+                boolean isAnagram = isAnagram(o, sCharCounts.clone());
+                if (isAnagram) {
+                    group.add(o);
+                    indices.add(j);
+                }
+            }
+            
+            anagrams.add(group);
         }
         
-        return grpAnagrams;
+        return anagrams;
     }
     
-    public boolean checkAnagram(char[] str1, char[] str2) {
-        if (str1.length != str2.length) {
-            return false;
+    public int[] getCharCounts(String str) {
+        int [] charCounts = new int[26];
+        for (int i = 0; i < str.length(); i++) {
+            charCounts[str.charAt(i) - 'a']++;
         }
-        char[] check = new char[26];
-        for (int i = 0; i < str1.length; i++) {
-            check[str1[i] - 'a']++;
-            check[str2[i] - 'a']--;
+        return charCounts;
+    }
+    
+    public boolean isAnagram(String o, int [] charCounts) {
+        for (int i = 0; i < o.length(); i++) {
+            charCounts[o.charAt(i) - 'a']--;
         }
-        for (int i = 0; i < check.length; i++) {
-            if (check[i] != 0) {
+        
+        for (int i = 0; i < 26; i++) {
+            if (charCounts[i] != 0) {
                 return false;
             }
         }
+        
         return true;
+    }
+    */
+    
+    // optimal
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> anagrams = new ArrayList<>();
+        HashMap<String, List<String>> groups = new HashMap<>();
+        
+        for (int i = 0; i < strs.length; i++) {
+            String s = strs[i];
+            char [] sCharArray = s.toCharArray();
+            Arrays.sort(sCharArray);
+            String key = new String(sCharArray);
+            
+            if (groups.containsKey(key)) {
+                List<String> group = groups.get(key);
+                group.add(s);
+            } else {
+                List<String> newGroup = new ArrayList<>();
+                newGroup.add(s);
+                anagrams.add(newGroup);
+                groups.put(key, newGroup);
+            }
+        }
+                
+        return anagrams;
     }
 }
